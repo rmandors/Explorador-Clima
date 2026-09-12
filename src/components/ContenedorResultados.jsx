@@ -1,7 +1,13 @@
-function ContenedorResultados() {
+import TarjetaClima from './TarjetaClima.jsx';
+
+function ContenedorResultados({ datos }) {
   return (
     <section>
-      <p>Los resultados aparecerán aquí.</p>
+      {datos ? (
+        <TarjetaClima datos={datos} />
+      ) : (
+        <p>Los resultados aparecerán aquí.</p>
+      )}
     </section>
   );
 }
