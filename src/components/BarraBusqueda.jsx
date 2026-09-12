@@ -1,6 +1,10 @@
-function BarraBusqueda() {
+function BarraBusqueda({ onBuscar }) {
+
   function manejarSubmit(event) {
-    event.preventDefault()
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const query = formData.get("query");
+    onBuscar(query);
   }
 
   return (
@@ -12,7 +16,7 @@ function BarraBusqueda() {
       />
       <button type="submit">Buscar</button>
     </form>
-  )
+  );
 }
 
-export default BarraBusqueda
+export default BarraBusqueda;
