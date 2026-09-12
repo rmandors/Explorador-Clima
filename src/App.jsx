@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import BarraBusqueda from './components/BarraBusqueda.jsx';
 import ContenedorResultados from './components/ContenedorResultados.jsx';
 
@@ -5,6 +7,8 @@ const API_KEY = import.meta.env.WEATHER_API_KEY;
 const URL_CLIMA = "https://api.weatherapi.com/v1/current.json";
 
 function App() {
+  const [datos, setDatos] = useState(null);
+
   async function buscarDatos(query) {
     const url = `${URL_CLIMA}?key=${API_KEY}&q=${encodeURIComponent(query)}&lang=es`;
 
@@ -17,9 +21,10 @@ function App() {
         }
         throw new Error("No se pudieron cargar los datos del clima.");
       }
-      const datos = await respuesta.json();
-      console.log(datos);
-      return datos;
+      const resultado = await respuesta.json();
+      console.log(resultado);
+      setDatos(resultado);
+      return resultado;
     } catch (err) {
       console.error(err.message);
     }
@@ -29,7 +34,7 @@ function App() {
     <main>
       <h1>Explorador-Clima</h1>
       <BarraBusqueda onBuscar={buscarDatos} />
-      <ContenedorResultados />
+      <ContenedorResultados datos={datos} />
     </main>
   );
 }
