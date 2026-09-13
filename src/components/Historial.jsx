@@ -4,8 +4,8 @@ function Historial({ items = [], onSeleccionar }) {
   }
 
   return (
-    <nav>
-      <p>Búsquedas recientes</p>
+    <nav className="historial">
+      <p className="historial-titulo">Búsquedas recientes</p>
       <ul>
         {items.map((ciudad) => (
           <li key={ciudad}>

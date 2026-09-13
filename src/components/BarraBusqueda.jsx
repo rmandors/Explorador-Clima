@@ -24,15 +24,17 @@ function BarraBusqueda({ onBuscar }) {
   }
 
   return (
-    <form onSubmit={manejarSubmit}>
-      <input
-        type="text"
-        name="query"
-        placeholder="Ciudad o país…"
-        onChange={manejarCambio}
-      />
-      <button type="submit">Buscar</button>
-      {errorValidacion && <p>{errorValidacion}</p>}
+    <form className="barra-busqueda" onSubmit={manejarSubmit}>
+      <div className="barra-busqueda-fila">
+        <input
+          type="text"
+          name="query"
+          placeholder="Ciudad o país…"
+          onChange={manejarCambio}
+        />
+        <button type="submit" className="boton boton-primario">Buscar</button>
+      </div>
+      {errorValidacion && <p className="aviso-validacion">{errorValidacion}</p>}
     </form>
   );
 }

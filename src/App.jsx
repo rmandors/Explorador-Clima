@@ -3,6 +3,7 @@ import { useState } from 'react';
 import BarraBusqueda from './components/BarraBusqueda.jsx';
 import ContenedorResultados from './components/ContenedorResultados.jsx';
 import Historial from './components/Historial.jsx';
+import icono from './assets/icon.png';
 
 const API_KEY = import.meta.env.WEATHER_API_KEY;
 const URL_CLIMA = "https://api.weatherapi.com/v1/current.json";
@@ -14,7 +15,7 @@ function App() {
   const [ultimaQuery, setUltimaQuery] = useState('');
   const [historial, setHistorial] = useState([]);
 
-  async function buscarDatos(query) {
+  async function buscarDatos(query, guardarEnHistorial = true) {
     const url = `${URL_CLIMA}?key=${API_KEY}&q=${encodeURIComponent(query)}&lang=es`;
 
     setUltimaQuery(query);
@@ -35,10 +36,20 @@ function App() {
       console.log(resultado);
       setDatos(resultado);
 
-      const nombre = resultado.location.name;
-      setHistorial((previos) => (
-        [nombre, ...previos.filter((item) => item !== nombre)].slice(0, 5)
-      ));
+      if (guardarEnHistorial) {
+        const { name, country } = resultado.location;
+        const etiqueta = country.toLowerCase() === query.trim().toLowerCase()
+          ? country
+          : name;
+
+        setHistorial((previos) => {
+          const clave = etiqueta.trim().toLowerCase();
+          const sinRepetidos = previos.filter(
+            (item) => item.trim().toLowerCase() !== clave
+          );
+          return [etiqueta, ...sinRepetidos].slice(0, 5);
+        });
+      }
     } catch (err) {
       setError(err.message);
       setDatos(null);
@@ -52,10 +63,16 @@ function App() {
   }
 
   return (
-    <main>
-      <h1>Explorador-Clima</h1>
+    <main className="app">
+      <header className="encabezado">
+        <img src={icono} alt="" className="encabezado-icono" />
+        <h1>Explorador de Clima</h1>
+      </header>
       <BarraBusqueda onBuscar={buscarDatos} />
-      <Historial items={historial} onSeleccionar={buscarDatos} />
+      <Historial
+        items={historial}
+        onSeleccionar={(ciudad) => buscarDatos(ciudad, false)}
+      />
       <ContenedorResultados
         datos={datos}
         cargando={cargando}
