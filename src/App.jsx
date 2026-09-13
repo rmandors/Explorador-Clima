@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import BarraBusqueda from './components/BarraBusqueda.jsx';
 import ContenedorResultados from './components/ContenedorResultados.jsx';
+import Historial from './components/Historial.jsx';
 
 const API_KEY = import.meta.env.WEATHER_API_KEY;
 const URL_CLIMA = "https://api.weatherapi.com/v1/current.json";
@@ -11,6 +12,7 @@ function App() {
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
   const [ultimaQuery, setUltimaQuery] = useState('');
+  const [historial, setHistorial] = useState([]);
 
   async function buscarDatos(query) {
     const url = `${URL_CLIMA}?key=${API_KEY}&q=${encodeURIComponent(query)}&lang=es`;
@@ -32,6 +34,11 @@ function App() {
       const resultado = await respuesta.json();
       console.log(resultado);
       setDatos(resultado);
+
+      const nombre = resultado.location.name;
+      setHistorial((previos) => (
+        [nombre, ...previos.filter((item) => item !== nombre)].slice(0, 5)
+      ));
     } catch (err) {
       setError(err.message);
       setDatos(null);
@@ -48,6 +55,7 @@ function App() {
     <main>
       <h1>Explorador-Clima</h1>
       <BarraBusqueda onBuscar={buscarDatos} />
+      <Historial items={historial} onSeleccionar={buscarDatos} />
       <ContenedorResultados
         datos={datos}
         cargando={cargando}
